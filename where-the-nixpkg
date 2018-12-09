@@ -1,0 +1,30 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+use feature qw(say);
+
+if ($#ARGV < 0) {
+  say 'You need to give me an subexpression using pkgs of what you want.';
+  say 'e.g. pkgs.nix.outPath + "/bin"';
+  exit 1;
+}
+
+my $subexpr = $ARGV[0];
+my $command = "nix-instantiate --eval -E 'let pkgs = import <nixpkgs> {}; in $subexpr'";
+
+chomp(my $result = `$command`);
+
+if ($? != 0) {
+  say "";
+  say "Error from nix-instantiate for command:";
+  say $command;
+  exit 1;
+}
+
+if ($result =~ /^".*"$/) {
+  (my $output = $result) =~ s/"//g;
+  say $output;
+} else {
+  say $result;
+}

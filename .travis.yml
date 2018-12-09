@@ -1,0 +1,6 @@
+sudo: required
+dist: trusty
+language: nix
+script:
+  - nix-env -f default.nix -i
+  - where-the-nixpkg pkgs.nix.outPath
